@@ -4,8 +4,11 @@ import './App.scss';
 import { useState } from 'react';
 import cn from 'classnames';
 
-const SORT_ALPHABETICAL = 'alphabetical';
-const SORT_BY_LENGTH = 'length';
+enum SortType {
+  SORT_ALPHABETICAL = 'alphabetical',
+  SORT_BY_LENGTH = 'length',
+  DEFAULT = '',
+}
 
 export const goodsFromServer = [
   'Dumplings',
@@ -20,32 +23,32 @@ export const goodsFromServer = [
   'Garlic',
 ];
 
-function sortGoods(goods: string[], sortField: string, isReserved: boolean) {
+function sortGoods(goods: string[], sortField: string, isReversed: boolean) {
   const sortedGoods = [...goods];
 
-  if (sortField === SORT_ALPHABETICAL) {
+  if (sortField === SortType.SORT_ALPHABETICAL) {
     sortedGoods.sort((goodA: string, goodB: string) =>
       goodA.localeCompare(goodB),
     );
-  } else if (sortField === SORT_BY_LENGTH) {
+  } else if (sortField === SortType.SORT_BY_LENGTH) {
     sortedGoods.sort(
       (goodA: string, goodB: string) => goodA.length - goodB.length,
     );
   }
 
-  if (isReserved) {
+  if (isReversed) {
     sortedGoods.reverse();
   }
 
   return sortedGoods;
 }
 
-function isInitialOrder(goods: string[], orirginalGoods: string[]) {
-  return goods.every((good, index) => good === orirginalGoods[index]);
+function isInitialOrder(goods: string[], originalGoods: string[]) {
+  return goods.every((good, index) => good === originalGoods[index]);
 }
 
 export const App: React.FC = () => {
-  const [sortField, setSortField] = useState('');
+  const [sortField, setSortField] = useState(SortType.DEFAULT);
   const [isReversed, setIsReversed] = useState(false);
 
   const visibleGoods = sortGoods(goodsFromServer, sortField, isReversed);
@@ -57,10 +60,11 @@ export const App: React.FC = () => {
         <button
           type="button"
           onClick={() => {
-            setSortField(SORT_ALPHABETICAL);
+            setSortField(SortType.SORT_ALPHABETICAL);
           }}
-          className={cn('button is-info is-active', {
-            'is-light': sortField !== SORT_ALPHABETICAL,
+          className={cn('button is-info', {
+            'is-light': sortField !== SortType.SORT_ALPHABETICAL,
+            'is-active': sortField === SortType.SORT_ALPHABETICAL,
           })}
         >
           Sort alphabetically
@@ -68,10 +72,11 @@ export const App: React.FC = () => {
         <button
           type="button"
           onClick={() => {
-            setSortField(SORT_BY_LENGTH);
+            setSortField(SortType.SORT_BY_LENGTH);
           }}
           className={cn('button is-success', {
-            'is-light': sortField !== SORT_BY_LENGTH,
+            'is-light': sortField !== SortType.SORT_BY_LENGTH,
+            'is-active': sortField === SortType.SORT_BY_LENGTH,
           })}
         >
           Sort by length
@@ -83,6 +88,7 @@ export const App: React.FC = () => {
           }}
           className={cn('button is-warning', {
             'is-light': !isReversed,
+            'is-active': isReversed,
           })}
         >
           Reverse
@@ -92,7 +98,7 @@ export const App: React.FC = () => {
           <button
             type="button"
             onClick={() => {
-              setSortField('');
+              setSortField(SortType.DEFAULT);
               setIsReversed(false);
             }}
             className="button is-danger is-light"
