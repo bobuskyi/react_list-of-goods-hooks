@@ -23,17 +23,13 @@ export const goodsFromServer = [
   'Garlic',
 ];
 
-function sortGoods(goods: string[], sortField: string, isReversed: boolean) {
+function sortGoods(goods: string[], sortField: SortType, isReversed: boolean) {
   const sortedGoods = [...goods];
 
   if (sortField === SortType.SORT_ALPHABETICAL) {
-    sortedGoods.sort((goodA: string, goodB: string) =>
-      goodA.localeCompare(goodB),
-    );
+    sortedGoods.sort((goodA, goodB) => goodA.localeCompare(goodB));
   } else if (sortField === SortType.SORT_BY_LENGTH) {
-    sortedGoods.sort(
-      (goodA: string, goodB: string) => goodA.length - goodB.length,
-    );
+    sortedGoods.sort((goodA, goodB) => goodA.length - goodB.length);
   }
 
   if (isReversed) {
@@ -43,7 +39,7 @@ function sortGoods(goods: string[], sortField: string, isReversed: boolean) {
   return sortedGoods;
 }
 
-function isInitialOrder(goods: string[], originalGoods: string[]) {
+function checkInitialOrder(goods: string[], originalGoods: string[]) {
   return goods.every((good, index) => good === originalGoods[index]);
 }
 
@@ -52,7 +48,7 @@ export const App: React.FC = () => {
   const [isReversed, setIsReversed] = useState(false);
 
   const visibleGoods = sortGoods(goodsFromServer, sortField, isReversed);
-  const showResetButton = !isInitialOrder(visibleGoods, goodsFromServer);
+  const showResetButton = !checkInitialOrder(visibleGoods, goodsFromServer);
 
   return (
     <div className="section content">
