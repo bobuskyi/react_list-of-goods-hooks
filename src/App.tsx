@@ -44,8 +44,8 @@ function checkInitialOrder(goods: string[], originalGoods: string[]) {
 }
 
 export const App: React.FC = () => {
-  const [sortField, setSortField] = useState(SortType.DEFAULT);
-  const [isReversed, setIsReversed] = useState(false);
+  const [sortField, setSortField] = useState<SortType>(SortType.DEFAULT);
+  const [isReversed, setIsReversed] = useState<boolean>(false);
 
   const visibleGoods = sortGoods(goodsFromServer, sortField, isReversed);
   const showResetButton = !checkInitialOrder(visibleGoods, goodsFromServer);
